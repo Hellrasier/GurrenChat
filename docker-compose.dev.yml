@@ -10,7 +10,7 @@ services:
     env_file:
       - .env
     volumes:
-      - ./src:/app/src
+      - ./api/src:/app/src
     depends_on:
       - mongo
     ports:
@@ -32,12 +32,14 @@ services:
     env_file:
       - .env
     volumes: 
-      - ./services/frontend:/app
-      - tables:/srv/tables
+      - ./frontend:/app
     depends_on:
-      - nest-server
+      - api
     ports:
       - 8000:8000
 
 volumes:
   mongodata: 
+  caddy_data:
+  caddy_config:
+

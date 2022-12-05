@@ -4,10 +4,10 @@ COPY ./package.json ./pnpm-lock.yaml ./
 RUN npm install -g pnpm
 COPY . .
 RUN pnpm i
-RUN pnpm start:production
+RUN pnpm build
 
 FROM builder as development
-CMD ["pnpm", "start:dev"]
+CMD ["pnpm", "dev"]
 
 FROM caddy:2 as production
 COPY ./Caddyfile /etc/caddy/Caddyfile  

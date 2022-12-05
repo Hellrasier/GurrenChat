@@ -31,7 +31,6 @@ services:
       - .env
     volumes: 
       - ./frontend:/app
-      - tables:/srv/tables
     depends_on:
       - nest-server
     ports:
