@@ -1,0 +1,29 @@
+version: "3"
+
+services: 
+  api:
+    build: 
+      context: ./api
+      target: development
+    container_name: nest-server
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - mongo
+    ports:
+      - 8002:3000
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    restart: unless-stopped
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - 27017:27017
+
+volumes:
+  mongodata: 
