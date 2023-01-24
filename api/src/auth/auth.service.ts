@@ -1,21 +1,59 @@
 import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { hashPassword, validatePassword } from 'metautil';
-import { User } from 'src/users/users.schema';
+import { PrismaClient } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly jwtService: JwtService) {}
+  private readonly prisma: PrismaClient;
 
-  async generateToken(user: User): Promise<string> {
-    return this.jwtService.signAsync(user);
+  constructor() {
+    this.prisma = new PrismaClient();
   }
 
-  async hashPassword(password: string): Promise<string> {
-    return hashPassword(password);
+  async register(username: string, password: string) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    return this.prisma.user.create({
+      data: {
+        username,
+        password: hashedPassword,
+      },
+    });
   }
 
-  async validatePassword(password: string, hashed: string): Promise<boolean> {
-    return validatePassword(password, hashed);
+  async login(username: string, password: string) {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        username,
+      },
+    });
+
+    if (!user) {
+      throw new Error('Invalid login credentials');
+    }
+
+    const passwordMatches = await bcrypt.compare(password, user.password);
+
+    if (!passwordMatches) {
+      throw new Error('Invalid login credentials');
+    }
+
+    // generate JWT token
+    const token = sign(
+      { user: { id: user.id, username: user.username } },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: '1d',
+      },
+    );
+    return { user, token };
+  }
+
+  async validateUser(id: number) {
+    return this.prisma.user.findFirst({
+      where: {
+        id,
+      },
+    });
   }
 }

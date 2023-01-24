@@ -5,23 +5,20 @@ services:
     build: 
       context: ./api
       target: production
-    container_name: nest-server
     restart: unless-stopped
     env_file:
       - .env
     depends_on:
-      - mongo
+      - postgres
     ports:
       - 8001:3000
 
-  mongo:
-    image: mongo:latest
-    container_name: mongodb
-    restart: unless-stopped
-    volumes:
-      - mongodata:/data/db
-    ports:
-      - 27017:27017
+  postgres:
+    image: postgres:15
+    env_file:
+      - .env
+    ports: 
+      - 5432:5432
   
   frontend:
     build: 
@@ -32,7 +29,7 @@ services:
     volumes: 
       - ./frontend:/app
     depends_on:
-      - nest-server
+      - api
     ports:
       - 8000:80
 

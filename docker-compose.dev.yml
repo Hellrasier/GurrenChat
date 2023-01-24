@@ -1,42 +1,40 @@
 version: "3"
 
 services: 
-  api:
-    build: 
-      context: ./api
-      target: development
-    container_name: nest-server
-    restart: unless-stopped
-    env_file:
-      - .env
-    volumes:
-      - ./api/src:/app/src
-    depends_on:
-      - mongo
-    ports:
-      - 8002:3000
+  # api:
+  #   build: 
+  #     context: ./api
+  #     target: development
+  #   container_name: nest-server
+  #   restart: unless-stopped
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - ./api/src:/app/src
+  #   depends_on:
+  #     - postgres
+  #   ports:
+      # - 3000:8001
 
-  mongo:
-    image: mongo:latest
-    container_name: mongodb
-    restart: unless-stopped
-    volumes:
-      - mongodata:/data/db
-    ports:
-      - 27017:27017
-  
-  frontend:
-    build: 
-      context: ./frontend
-      target: development
+  postgres:
+    image: postgres:15
     env_file:
       - .env
-    volumes: 
-      - ./frontend:/app
-    depends_on:
-      - api
-    ports:
-      - 8000:8000
+    ports: 
+      - 5432:5432
+  
+  # frontend:
+  #   build: 
+  #     context: ./frontend
+  #     target: development
+  #   env_file:
+  #     - .env
+  #   volumes: 
+  #     - ./frontend:/app
+  #   depends_on:
+  #     - api
+  #   ports:
+  #     - 8000:8000
 
 volumes:
   mongodata: 

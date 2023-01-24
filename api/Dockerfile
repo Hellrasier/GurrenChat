@@ -8,6 +8,8 @@ RUN pnpm i
 
 COPY . .
 
+RUN pnpm prisma generate
+
 FROM builder as production
 
 ENV NODE_ENV production

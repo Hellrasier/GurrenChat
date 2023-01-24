@@ -1,16 +1,12 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { UsersController } from './users/users.controller';
-import { UsersModule } from './users/users.module';
+import { AuthController } from './auth/auth.controller';
+import { ChatModule } from './chat/chats.module';
+import { ChatController } from './chat/chats.controller';
 
 @Module({
-  imports: [
-    MongooseModule.forRoot(process.env.DB_URL),
-    AuthModule,
-    UsersModule,
-  ],
-  controllers: [UsersController],
+  imports: [AuthModule, ChatModule],
+  controllers: [AuthController, ChatController],
   providers: [],
 })
 export class AppModule {}
