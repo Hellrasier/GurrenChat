@@ -18,6 +18,11 @@ export class AuthService {
         username,
         password: hashedPassword,
       },
+      select: {
+        id: true,
+        username: true,
+        createdAt: true,
+      },
     });
   }
 
@@ -46,7 +51,10 @@ export class AuthService {
         expiresIn: '1d',
       },
     );
-    return { user, token };
+    return {
+      user: { id: user.id, username: user.username, createdAt: user.createdAt },
+      token,
+    };
   }
 
   async validateUser(id: number) {
